@@ -7,7 +7,7 @@ router.use("/auth", authRouter);
 router.use("/users", usersRouter);
 
 router.get("/", (req, res) => {
-  res.json({ api: "BATTLECRUISER OPERATIONAL" });
+  res.json({ api: "Server Online" });
 });
 
 module.exports = router;

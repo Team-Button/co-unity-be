@@ -13,10 +13,10 @@ exports.up = async function (knex) {
             .notNullable()
             .unique()       
         tbl.integer("reported_by")
-            .reference("id")
+            .notNullable()
+            .references("id")
             .inTable("users")
-            .notNullalbe()
-        tbl.photo("string")
+        tbl.string("photo")
             .notNullable()
     })  
 };

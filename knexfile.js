@@ -16,11 +16,17 @@ module.exports = {
     connection: {
       filename: "./database/comake.db3",
     },
+    migrations: {
+      directory: './database/migrations',
+    },
   },
   testing: {
     ...sqlite,
     connection: {
       filename: "./database/comake-test.db3",
+    },
+    migrations: {
+      directory: './database/migrations',
     },
   },
   pool: {

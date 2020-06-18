@@ -1,7 +1,7 @@
 const moment = require('moment')
 
 exports.up = async function (knex) {
-    await knex.schema.createTable("issues", tbl => {
+    await knex.schema.createTable("posts", tbl => {
         tbl.increments("id")
             .notNullable()
         tbl.string("topic")
@@ -13,14 +13,14 @@ exports.up = async function (knex) {
             .notNullable()
             .unique()       
         tbl.integer("reported_by")
-            .reference("id")
+            .notNullable()
+            .references("id")
             .inTable("users")
-            .notNullalbe()
-        tbl.photo("string")
+        tbl.string("photo")
             .notNullable()
     })  
 };
 
 exports.down = async function (knex) {
-    await knex.schema.dropTableIfExists("issues")
+    await knex.schema.dropTableIfExists("posts")
 };

@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 
 const { jwtSecret } = require("./auth-config");
 
-const Users = require("../router/users-model");
+const Users = require("../users/users-model");
 
 router.post("/register", (req, res) => {
   let user = req.body;
   console.log(req.body);
-  const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
+  const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
 
   Users.add(user)

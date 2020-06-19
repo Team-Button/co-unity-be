@@ -31,17 +31,15 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
   const { topic, description } = req.body;
-  const newPost = { topic, description };
 
   if (!topic || !description) {
     res.status(400).json({
       errorMessage: "Please provide contents for the post.",
     });
   } else {
-    db.insert(newPost)
+    db.addPost(req.body)
       .then((addedPost) => {
-        res.json(addedPost);
-        res.status(201);
+        res.status(201).json(addedPost);
       })
       .catch((error) => {
         res.render(error);

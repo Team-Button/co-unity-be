@@ -6,7 +6,7 @@ module.exports = {
   addPost,
   updatePost,
   deletePost,
-  insert,
+  // insert,
 };
 
 function getPosts() {
@@ -17,20 +17,22 @@ function getById(id) {
   return db("posts").where({ id }).first();
 }
 
-function addPost(newPost) {
-  return db("posts").insert(newPost);
+async function addPost(newPost) {
+  const [ id ]= await db("posts").insert(newPost);
+  return getById(id)
 }
 
-function updatePost(id, updatedPost) {
-  return db("posts").update();
+async function updatePost(id, updatedPost) {
+  await db("posts").update(updatedPost).where({ id });
+  return getById(id)
 }
 
 function deletePost(id) {
   return db("posts").where({ id }).del();
 }
 
-function insert(post) {
-  return db("posts")
-    .insert(post, "id")
-    .then((ids) => ({ id: ids[0] }));
-}
+// function insert(post) {
+//   return db("posts")
+//     .insert(post, "id")
+//     .then((ids) => ({ id: ids[0] }));
+// }

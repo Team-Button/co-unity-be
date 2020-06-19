@@ -26,10 +26,6 @@ function add(user) {
     });
 }
 
-// function add(user) {
-//   return db("users").insert(user);
-// }
-
 function findById(id) {
   return db("users").select("id", "username").where({ id }).first();
 }

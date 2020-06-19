@@ -6,6 +6,7 @@ module.exports = {
   addPost,
   updatePost,
   deletePost,
+  insert,
 };
 
 function getPosts() {
@@ -26,4 +27,10 @@ function updatePost(id, updatedPost) {
 
 function deletePost(id) {
   return db("posts").where({ id }).del();
+}
+
+function insert(post) {
+  return db("posts")
+    .insert(post, "id")
+    .then((ids) => ({ id: ids[0] }));
 }

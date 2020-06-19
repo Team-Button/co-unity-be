@@ -29,6 +29,29 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.post("/", (req, res) => {
+  const { topic, description } = req.body;
+  const newPost = { topic, description };
+
+  if (!topic || !description) {
+    res.status(400).json({
+      errorMessage: "Please provide contents for the post.",
+    });
+  } else {
+    db.insert(newPost)
+      .then((addedPost) => {
+        res.json(addedPost);
+        res.status(201);
+      })
+      .catch((error) => {
+        res.render(error);
+        res.render.status(500).json({
+          error: "There was an error while saving the post to the database",
+        });
+      });
+  }
+});
+
 router.delete("/:id", (req, res) => {
   db.deletePost(req.params.id)
     .then((removed) => {

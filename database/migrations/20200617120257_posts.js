@@ -1,3 +1,5 @@
+const moment = require("moment")
+
 exports.up = async function (knex) {
     await knex.schema.createTable("posts", tbl => {
         tbl.increments("id")
@@ -7,6 +9,7 @@ exports.up = async function (knex) {
         tbl.text("description")
             .notNullable()
         tbl.timestamp("posted_date")
+            .defaultTo(moment().format())
             .notNullable()     
         tbl.integer("reported_by")
             .notNullable()

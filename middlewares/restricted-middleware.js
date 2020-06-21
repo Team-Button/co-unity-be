@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
-const { jwtSecret } = require("./auth-config");
+const { jwtSecret } = require("../auth/auth-config");
+
+
+//this restricted middleware will decode id and name for future use within the application
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;

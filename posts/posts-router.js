@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("./posts-model");
 const router = express.Router();
+const { checkIfPostExists, checkIfAuthorizedUser ,validatePostReq } = require("../middlewares")
 router.use(express.json());
 
 router.get("/", (req, res) => {
@@ -14,9 +15,8 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  const { id } = req.params;
 
-  db.getById(id)
+  db.getById(req.params.id)
     .then((post) => {
       if (post) {
         res.status(200).json(post);
@@ -25,32 +25,38 @@ router.get("/:id", (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to get post" });
+      res.status(500).json({ error: "Failed to get posts" });
     });
 });
 
-router.post("/", (req, res) => {
-  const { topic, description } = req.body;
+router.get("/myposts", (req, res) => {
 
-  if (!topic || !description) {
-    res.status(400).json({
-      errorMessage: "Please provide contents for the post.",
+  db.getByUserId(req.user.id)
+    .then((posts) => {
+      res.status(200).json(post);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to get posts" });
     });
-  } else {
-    db.addPost(req.body)
-      .then((addedPost) => {
-        res.status(201).json(addedPost);
-      })
-      .catch((error) => {
-        res.render(error);
-        res.render.status(500).json({
-          error: "There was an error while saving the post to the database",
-        });
+});
+
+router.post("/", validatePostReq, (req, res) => {
+
+  db.addPost({ ...req.body, reported_by: req.user.id })
+    .then((addedPost) => {
+      res.status(201).json(addedPost);
+    })
+    .catch((error) => {
+      res.render(error);
+      res.render.status(500).json({
+        error: "There was an error while saving the post to the database",
       });
-  }
+    });
+    
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
+
   db.deletePost(req.params.id)
     .then((removed) => {
       res.status(200).json(removed);
@@ -60,8 +66,10 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
+
   const { description, topic } = req.body;
+
   const newContent = { description, topic };
 
   db.updatePost(req.params.id, newContent)

@@ -31,6 +31,10 @@ function deletePost(id) {
   return db("posts").where({ id }).del();
 }
 
+function getPostsByUserId(userId){
+  return db("posts").where({ reported_by: userId })
+}
+
 // function insert(post) {
 //   return db("posts")
 //     .insert(post, "id")

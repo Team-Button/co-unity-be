@@ -4,12 +4,22 @@ const jwt = require("jsonwebtoken");
 
 const { jwtSecret } = require("./auth-config");
 
-const Users = require("../router/users-model");
+const Users = require("../users/users-model");
 
-router.post("/register", (req, res) => {
+const { 
+  validateRegisterRequest, 
+  checkIfUsernameExists, 
+  validateLoginRequest } = require("../middlewares")
+
+
+//req.body will be validated by validateLoginRequest middleware to make sure people send in correct request
+//after that, checkIfUsernameExits will validate whether the username has been taken
+
+router.post("/register", validateRegisterRequest, checkIfUsernameExists, (req, res) => {
+
   let user = req.body;
   console.log(req.body);
-  const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
+  const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
 
   Users.add(user)
@@ -21,8 +31,10 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post("/login", (req, res) => {
-  let { username, password } = req.body;
+
+//req.body will be validated by validateLoginRequest middleware to make sure people send in correct request
+
+router.post("/login", validateLoginRequest, (req, res) => {
 
   Users.findBy({ username })
     .first()
@@ -32,7 +44,7 @@ router.post("/login", (req, res) => {
 
         res.status(200).json({
           token, // adds token to res
-          message: `Welcome ${user.username}!`,
+          message: `Welcome ${username}!`,
         });
       } else {
         res.status(401).json({ message: "Invalid Credentials" });

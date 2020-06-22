@@ -11,6 +11,15 @@ const sqlite = {
 };
 
 module.exports = {
+  production: {
+    ...sqlite,
+    connection: {
+      filename: "./database/comake.db3",
+    },
+    migrations: {
+      directory: './database/migrations',
+    },
+  },
   development: {
     ...sqlite,
     connection: {

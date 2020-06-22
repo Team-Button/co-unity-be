@@ -83,4 +83,15 @@ router.put("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
     });
 });
 
+//vote mechanism
+//"api/posts/:id/vote" , post and delete
+
+router.post("/:id/vote", checkIfPostExists, (req,res) => {
+
+})
+
+router.delete("/:id/vote", checkIfPostExists, (req,res) => {
+
+})
+
 module.exports = router;

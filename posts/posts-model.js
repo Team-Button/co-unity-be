@@ -46,8 +46,19 @@ function getPostsByUserId(userId){
   return db("posts").where({ reported_by: userId })
 }
 
-// function insert(post) {
-//   return db("posts")
-//     .insert(post, "id")
-//     .then((ids) => ({ id: ids[0] }));
-// }
+
+//voting mechanisms
+
+function getVotes(postId){
+  return db("votes").where({ postId })
+}
+
+async function addVote(postId, userId){
+  await db("votes").insert({ post_id: postId, voter_id: userId })
+  return getVotes(postId)
+}
+
+async function removeVote(postId, userId){
+  await db("votes").where({ post_id: postId, voter_id: userId }).del()
+  return getVotes(postId)
+}

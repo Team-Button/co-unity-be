@@ -1,12 +1,24 @@
 const moment = require("moment")
 
 exports.up = async function (knex) {
+
+    await knex.schema.createTable("categories", tbl=> {
+        tbl.increments("id")
+            .notNullable()
+        tbl.text("category")
+            .notNullable()
+    })
+
     await knex.schema.createTable("posts", tbl => {
         tbl.increments("id")
             .notNullable()
         tbl.string("topic")
             .notNullable()
         tbl.text("description")
+            .notNullable()
+        tbl.text("category_id")
+            .references("id")
+            .inTable("categories")
             .notNullable()
         tbl.timestamp("posted_date")
             .defaultTo(moment().format())
@@ -21,5 +33,6 @@ exports.up = async function (knex) {
 };
 
 exports.down = async function (knex) {
+    await knex.schema.dropTableIfExists("categories")
     await knex.schema.dropTableIfExists("posts")
 };

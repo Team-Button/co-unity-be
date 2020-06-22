@@ -1,7 +1,7 @@
 const express = require("express");
 const db = require("./posts-model");
 const router = express.Router();
-const { checkIfPostExists, checkIfAuthorizedUser ,validatePostReq } = require("../middlewares")
+const { checkIfPostExists, checkIfAuthorizedUser,validatePostReq } = require("../middlewares/posts-middleware")
 router.use(express.json());
 
 router.get("/", (req, res) => {
@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
 
-  db.getById(req.params.id)
+  db.getPosts(req.params.id)
     .then((post) => {
       if (post) {
         res.status(200).json(post);
@@ -40,6 +40,8 @@ router.get("/myposts", (req, res) => {
     });
 });
 
+
+//validatePostReq middleware will valiate the req.body to make sure it has all needed
 router.post("/", validatePostReq, (req, res) => {
 
   db.addPost({ ...req.body, reported_by: req.user.id })
@@ -55,29 +57,29 @@ router.post("/", validatePostReq, (req, res) => {
     
 });
 
+//checkIfPostExists will check if a certain post exists in the database
+//checkIfAuthorizedUser will check if the person that was tyring to delete or put is the person that created the post
+
 router.delete("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
 
   db.deletePost(req.params.id)
     .then((removed) => {
-      res.status(200).json(removed);
+      res.status(200).json({ message: `Post id ${req.params.id} has been deleted`});
     })
     .catch((error) => {
       res.status(500).json({ error: "Failed to delete post" });
     });
+
 });
 
 router.put("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
 
-  const { description, topic } = req.body;
-
-  const newContent = { description, topic };
-
-  db.updatePost(req.params.id, newContent)
+  db.updatePost(req.params.id, req.body)
     .then((edit) => {
       res.status(200).json(edit);
     })
     .catch((error) => {
-      res.status(500).json({ message: "Failed to update post" });
+      res.status(500).json({ message: `Failed to update post ${error}` });
     });
 });
 

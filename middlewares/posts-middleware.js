@@ -1,23 +1,22 @@
-const db = require("../database/dbconfig")
-const { getById } = require("../posts/post-model")
+const posts = require("../posts/posts-model")
 
 module.exports = {
-    checkIfPostExist,
-    validatePostReq
+    checkIfPostExists,
+    validatePostReq,
+    checkIfAuthorizedUser
 }
 
-async function checkIfPostExist(req, res, next) {
+async function checkIfPostExists(req, res, next) {
 
-    const post = await db.getById(req.params.id)
+    const post = await posts.getPosts(req.params.id)
 
     if (!post) {
         res.status(404).json({ message: `Could not find post with id ${req.params.id}` })
     } else {
-        
+
         req.user.post = {
-            postId: post.id,
-            reported_by: porst.reported_by
-        }
+            reporter_id: post.reporter_id
+        } 
         next()
     }
 
@@ -35,3 +34,14 @@ function validatePostReq(req, res, next){
         next()
     }
 }
+
+function checkIfAuthorizedUser(req, res, next){
+    console.log(req.user.post.reporter_id)
+    console.log(req.user.id)
+    if(req.user.post.reporter_id === req.user.id){
+      next();
+    } else {
+      res.status(403).json({ message: `This user id is not authorized to perform this action` })    
+    }
+ 
+ }

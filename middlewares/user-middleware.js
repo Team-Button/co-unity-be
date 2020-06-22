@@ -1,11 +1,9 @@
-const db = require("../database/dbconfig")
-const { findBy } = require("../auth/auth-config")
+const users = require("../users/users-model")
 
 module.exports = {
     validateRegisterRequest,
     validateLoginRequest,
     checkIfUsernameExists,
-    checkIfAuthorizedUser,
 }
 
 function validateRegisterRequest(req, res, next){
@@ -38,23 +36,18 @@ function validateLoginRequest(req, res, next){
 
 async function checkIfUsernameExists(req, res, next) {
 
-   const user = await db.findBy(req.body.username)
-
-   if (user) {
-      res.status(400).josn({ message: `Username ${req.body.username} has been taken. Please try another username`})
-   } else {
-      next()
+   try {
+      const user = await users.findBy({ username: req.body.username })
+      if (user) {
+         res.status(400).json({ message: `Username ${req.body.username} has been taken. Please try another username`})
+      } else {
+         next()
+      }
    }
-
+   catch (err){
+      console.log(err)
+   }
 }
 
-function checkIfAuthorizedUser(req, res, next){
 
-   if(req.user.post.reported_by === req.user.id){
-     next();
-   } else {
-     res.status(403).json({ message: `This user id is not authorized to perform this action` })    
-   }
-
-}
 

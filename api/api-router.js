@@ -4,7 +4,7 @@ const authRouter = require("../auth/auth-router");
 const usersRouter = require("../users/users-router");
 const postsRouter = require("../posts/posts-router");
 
-const restrictedMiddleware = require("../middlewares")
+const restrictedMiddleware = require("../middlewares/restricted-middleware")
 
 router.use("/auth", authRouter);
 router.use("/users", restrictedMiddleware, usersRouter);

@@ -9,7 +9,7 @@ const Users = require("../users/users-model");
 const { 
   validateRegisterRequest, 
   checkIfUsernameExists, 
-  validateLoginRequest } = require("../middlewares")
+  validateLoginRequest } = require("../middlewares/user-middleware")
 
 
 //req.body will be validated by validateLoginRequest middleware to make sure people send in correct request
@@ -18,7 +18,6 @@ const {
 router.post("/register", validateRegisterRequest, checkIfUsernameExists, (req, res) => {
 
   let user = req.body;
-  console.log(req.body);
   const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
 
@@ -36,15 +35,16 @@ router.post("/register", validateRegisterRequest, checkIfUsernameExists, (req, r
 
 router.post("/login", validateLoginRequest, (req, res) => {
 
+  const { username, password } = req.body
+
   Users.findBy({ username })
     .first()
     .then((user) => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = signToken(user);
-
         res.status(200).json({
           token, // adds token to res
-          message: `Welcome ${username}!`,
+          message: `Welcome ${user.username}!`,
         });
       } else {
         res.status(401).json({ message: "Invalid Credentials" });

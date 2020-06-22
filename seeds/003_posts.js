@@ -8,6 +8,7 @@ exports.seed = async function(knex) {
       description: "Please fix this pothole in front of my house!",
       reported_by: 1,
       posted_date: moment().format(),
+      category_id: 2,
       photo: "xxx"
     },
     {
@@ -15,6 +16,7 @@ exports.seed = async function(knex) {
       description: "Please help me find my cat",
       reported_by: 3,
       posted_date: moment().format(),
+      category_id: 3,
       photo: "xxx"
     },
     {
@@ -22,6 +24,7 @@ exports.seed = async function(knex) {
       description: "I found this one cat and I'm looking for its owner",
       reported_by: 2,
       posted_date: moment().format(),
+      category_id: 3,
       photo: "xxx"
     }
   ]);

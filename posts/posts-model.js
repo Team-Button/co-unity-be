@@ -5,12 +5,17 @@ module.exports = {
   addPost,
   updatePost,
   deletePost,
+  getVotes,
+  addVote,
+  removeVote
 };
 
 function getPosts(id) {
+
   let posts = db("posts")
   .leftJoin("users", "posts.reported_by","users.id")
   .leftJoin("categories", "posts.category_id", "categories.id")
+  .leftJoin("votes", "posts.id", "votes.post_id")
   .select(
     "posts.id", 
     "topic", 
@@ -20,12 +25,29 @@ function getPosts(id) {
     "users.name as reporter", 
     "categories.category as category", 
     "photo");
+  
+    if (id){
+      return posts.where("posts.id", id).first().then(async (post) => {
+        const postVotes = await getVotes(id)
+        return {
+          ...post,
+          votes: postVotes
+        }
+      })
+    } else {
+      return posts.then( posts => {
+        const promise = posts.map( post => {
+          return getVotes(post.id).then(postVotes => {
+            return {
+              ...post,
+              votes: postVotes
+            }
+          })
+        })
+        return Promise.all(promise)
+      })
+    }
 
-  if (id) {
-    return posts.where("posts.id", id).first()
-  } else {
-    return posts
-  }
 }
 
 async function addPost(newPost) {
@@ -50,7 +72,7 @@ function getPostsByUserId(userId){
 //voting mechanisms
 
 function getVotes(postId){
-  return db("votes").where({ postId })
+  return db("votes").where("post_id", postId)
 }
 
 async function addVote(postId, userId){

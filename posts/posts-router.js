@@ -87,18 +87,32 @@ router.put("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
 //"api/posts/:id/vote" , post and delete
 
 router.post("/:id/vote", checkIfPostExists, async (req,res) => {
+
   try {
-    const votes = await db.addVote(req.params.id, req.user.id)
-    res.status(200).json(votes)
+    const voteExists = await db("votes").where({ post_id: req.params.id, voter_id: req.user.id }).first()
+    if (!voteExists) {
+      const votes = await db.addVote(req.params.id, req.user.id)
+      res.status(200).json(votes)
+    } else {
+      res.status(400).json({ message: `cannot vote for post ${req.params.id} twice!`})
+    }
+    
   } catch {
     res.status(500).json({ message: `Failed to update vote due to ${error}` })
   }
 })
 
 router.delete("/:id/vote", checkIfPostExists, async (req,res) => {
+
   try {
-    const votes = await db.removeVote(req.params.id, req.user.id)
-    res.status(200).json(votes)
+    const voteExists = await db("votes").where({ post_id: req.params.id, voter_id: req.user.id }).first()
+    if (voteExists) {
+      await db.removeVote(req.params.id, req.user.id)
+      res.status(200).json({ message: `Successfully remove your vote from ${req.params.id}`})
+    } else {
+      res.status(404).json({ message: `Cannot remove vote because the vote doesn't exists`})
+    }
+    
   } catch {
     res.status(500).json({ message: `Failed to update vote due to ${error}` })
   }

@@ -41,7 +41,7 @@ function getPosts(id) {
             return {
               ...post,
               votes: postVotes
-            }
+              }
           })
         })
         return Promise.all(promise)
@@ -72,7 +72,7 @@ function getPostsByUserId(userId){
 //voting mechanisms
 
 function getVotes(postId){
-  return db("votes").where("post_id", postId)
+  return db("votes").where("post_id", postId).select("id","voter_id")
 }
 
 async function addVote(postId, userId){

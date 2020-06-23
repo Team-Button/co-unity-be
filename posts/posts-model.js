@@ -7,7 +7,8 @@ module.exports = {
   deletePost,
   getVotes,
   addVote,
-  removeVote
+  removeVote,
+  hasVoted
 };
 
 function getPosts(id) {
@@ -83,4 +84,8 @@ async function addVote(postId, userId){
 async function removeVote(postId, userId){
   await db("votes").where({ post_id: postId, voter_id: userId }).del()
   return getVotes(postId)
+}
+
+function hasVoted(postId, userId){
+  return db("votes").where({ post_id: postId, voter_id: userId }).first()
 }

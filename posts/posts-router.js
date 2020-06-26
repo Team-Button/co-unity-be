@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
       res.status(200).json(posts);
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to get posts" });
+      res.status(500).json({ error: `Failed to get posts ${error}` });
     });
 });
 
@@ -82,5 +82,41 @@ router.put("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
       res.status(500).json({ message: `Failed to update post ${error}` });
     });
 });
+
+//vote mechanism
+//"api/posts/:id/vote" , post and delete
+
+router.post("/:id/vote", checkIfPostExists, async (req,res) => {
+
+  try {
+    const voteExists = await db.hasVoted(req.params.id, req.user.id)
+    if (voteExists) {
+      res.status(400).json({ message: `Cannot vote for post id ${req.params.id} twice!` })
+    } else {
+      const votes = await db.addVote(req.params.id, req.user.id)
+      res.status(200).json(votes)
+    }
+      
+  } catch {
+    res.status(500).json({ message: `Failed to update vote due to ${error}` })
+  }
+})
+
+router.delete("/:id/vote", checkIfPostExists, async (req,res) => {
+
+  try {
+    const voteExists = await db.hasVoted(req.params.id, req.user.id)
+    if (voteExists){
+      await db.removeVote(req.params.id, req.user.id)
+      res.status(200).json({ message: `Successfully remove your vote from ${req.params.id}`})
+    } else {
+      res.status(400).json({ message: `You cannot perform this action twice` })
+    }
+      
+    
+  } catch {
+    res.status(500).json({ message: `Failed to update vote due to ${error}` })
+  }
+})
 
 module.exports = router;

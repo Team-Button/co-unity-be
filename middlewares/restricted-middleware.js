@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { jwtSecret } = require("../auth/auth-config");
+const { jwtSecret } = require("../api/auth/auth-config");
 
 
 //this restricted middleware will decode id and name for future use within the application

@@ -12,22 +12,18 @@ const sqlite = {
 
 module.exports = {
   production: {
-    ...sqlite,
-    connection: {
-      filename: "./database/comake.db3",
-    },
-    migrations: {
-      directory: './database/migrations',
-    },
+    ...postgres,
+    connection: process.env.DATABASE_URL,
+    ssl: true
   },
   development: {
-    ...sqlite,
+    ...postgres,
     connection: {
-      filename: "./database/comake.db3",
-    },
-    migrations: {
-      directory: './database/migrations',
-    },
+      database: "co-make-db",
+      host: "127.0.0.1",
+      password: process.env.DB_PASS,
+      user: 'postgres'
+    }
   },
   testing: {
     ...sqlite,

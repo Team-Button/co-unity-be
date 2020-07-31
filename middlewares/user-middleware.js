@@ -1,4 +1,4 @@
-const users = require("../users/users-model")
+const users = require("../api/users/users-model")
 
 module.exports = {
     validateRegisterRequest,

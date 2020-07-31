@@ -9,7 +9,7 @@ exports.up = async function(knex) {
             .notNullable()
         tbl.integer("voter_id")
             .references("id")
-            .inTable("voters")
+            .inTable("users")
             .notNullable()
     })
 };

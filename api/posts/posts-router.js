@@ -1,7 +1,7 @@
 const express = require("express");
 const db = require("./posts-model");
 const router = express.Router();
-const { checkIfPostExists, checkIfAuthorizedUser,validatePostReq } = require("../middlewares/posts-middleware")
+const { checkIfPostExists, checkIfAuthorizedUser,validatePostReq } = require("../../middlewares/posts-middleware")
 router.use(express.json());
 
 router.get("/", (req, res) => {

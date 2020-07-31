@@ -1,4 +1,4 @@
-const posts = require("../posts/posts-model")
+const posts = require("../api/posts/posts-model")
 
 module.exports = {
     checkIfPostExists,

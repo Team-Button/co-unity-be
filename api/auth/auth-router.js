@@ -9,7 +9,7 @@ const Users = require("../users/users-model");
 const { 
   validateRegisterRequest, 
   checkIfUsernameExists, 
-  validateLoginRequest } = require("../middlewares/user-middleware")
+  validateLoginRequest } = require("../../middlewares/user-middleware")
 
 
 //req.body will be validated by validateLoginRequest middleware to make sure people send in correct request

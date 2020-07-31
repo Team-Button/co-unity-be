@@ -10,13 +10,6 @@ exports.seed = async function(knex) {
       posted_date: moment().format(),
       category_id: 4,
       photo: "https://cdn.pixabay.com/photo/2020/05/07/08/30/coronavirus-5140667_960_720.jpg"
-    },{
-      topic: "MARIJUANA",
-      description: "MY NEIGHBOR SMOKES MARIJUANA EVERYDAY AND MY DOG GETS HIGH ALL THE TIME. CAN SOMEBODY DO SOMETHING ABOUT IT?",
-      reported_by: 4,
-      posted_date: moment().format(),
-      category_id: 6,
-      photo: "https://cdn.pixabay.com/photo/2020/06/19/03/06/marijuana-leaf-5315557_960_720.jpg"
     },
     {
       topic: "Possible Hoarder Issue",

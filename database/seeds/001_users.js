@@ -5,6 +5,12 @@ exports.seed = async function(knex) {
   
   await knex("users").insert([
     {
+      password: bcrypt.hashSync("testing1234", 10),
+      email: "test@counity.com",
+      name: "Test User",
+      username: "counity-test"
+    },
+    {
       password: bcrypt.hashSync("testing00", 10),
       email: "mb@counity.com",
       name: "Mashima Button",

@@ -16,7 +16,7 @@ exports.up = async function (knex) {
             .notNullable()
         tbl.text("description")
             .notNullable()
-        tbl.text("category_id")
+        tbl.integer("category_id")
             .references("id")
             .inTable("categories")
             .notNullable()

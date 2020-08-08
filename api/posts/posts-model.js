@@ -11,6 +11,7 @@ module.exports = {
   hasVoted
 };
 
+
 function getPosts(id) {
 
   let posts = db("posts")
@@ -37,18 +38,16 @@ function getPosts(id) {
       })
     } else {
       return posts.then( posts => {
-        const promise = posts.map( post => {
-          return getVotes(post.id).then(postVotes => {
+        const promise = posts.map( async (post) => {
+          const postVotes = await getVotes(post.id)
             return {
               ...post,
               votes: postVotes
               }
           })
-        })
         return Promise.all(promise)
       })
     }
-
 }
 
 async function addPost(newPost) {

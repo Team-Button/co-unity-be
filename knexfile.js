@@ -18,12 +18,7 @@ module.exports = {
   },
   development: {
     ...postgres,
-    connection: {
-      database: "co-make-db",
-      host: "127.0.0.1",
-      password: process.env.DB_PASS,
-      user: 'postgres'
-    }
+    connection: `postgresql://postgres:${process.env.POSTGRES_PASSWORD}@localhost:5432/postgres`
   },
   testing: {
     ...sqlite,

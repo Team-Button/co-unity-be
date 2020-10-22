@@ -9,8 +9,38 @@ Backend of Co-Unity application built with Node, Express, and PostgresQL.
 ### **Node.js**
 ### **Express.js**
 ### **PostgresQL**
+### **Knex**
+### **JSON Web Token**
+### **Bcrypt**
+
 
 # Database Schema
+
+## Users
+| Column | Type |
+|----|------|
+| id | Integer |
+| username | Char |
+| email | Char |
+| password | Char |
+
+
+## Users
+| Column | Type |
+|----|------|
+| id | Integer |
+| username | Char |
+| email | Char |
+| password | Char |
+
+
+## Users
+| Column | Type |
+|----|------|
+| id | Integer |
+| username | Char |
+| email | Char |
+| password | Char |
 
 # Endpoints
 

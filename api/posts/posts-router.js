@@ -1,7 +1,11 @@
 const express = require("express");
 const db = require("./posts-model");
 const router = express.Router();
-const { checkIfPostExists, checkIfAuthorizedUser,validatePostReq } = require("../../middlewares/posts-middleware")
+const {
+  checkIfPostExists,
+  checkIfAuthorizedUser,
+  validatePostReq
+} = require("../../middlewares/posts-middleware")
 router.use(express.json());
 
 router.get("/", (req, res) => {
@@ -10,7 +14,9 @@ router.get("/", (req, res) => {
       res.status(200).json(posts);
     })
     .catch((error) => {
-      res.status(500).json({ error: `Failed to get posts ${error}` });
+      res.status(500).json({
+        message: `Failed to get posts ${error}`
+      });
     });
 });
 
@@ -21,11 +27,15 @@ router.get("/:id", (req, res) => {
       if (post) {
         res.status(200).json(post);
       } else {
-        res.status(404).json({ message: "Could not find post with given id." });
+        res.status(404).json({
+          message: "Could not find post with given id."
+        });
       }
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to get posts" });
+      res.status(500).json({
+        error: "Failed to get posts"
+      });
     });
 });
 
@@ -36,7 +46,9 @@ router.get("/myposts", (req, res) => {
       res.status(200).json(post);
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to get posts" });
+      res.status(500).json({
+        message: "Failed to get posts"
+      });
     });
 });
 
@@ -44,17 +56,20 @@ router.get("/myposts", (req, res) => {
 //validatePostReq middleware will valiate the req.body to make sure it has all needed
 router.post("/", validatePostReq, (req, res) => {
 
-  db.addPost({ ...req.body, reported_by: req.user.id })
+  db.addPost({
+      ...req.body,
+      reported_by: req.user.id
+    })
     .then((addedPost) => {
       res.status(201).json(addedPost);
     })
     .catch((error) => {
       res.render(error);
       res.render.status(500).json({
-        error: "There was an error while saving the post to the database",
+        message: "There was an error while saving the post to the database",
       });
     });
-    
+
 });
 
 //checkIfPostExists will check if a certain post exists in the database
@@ -64,10 +79,14 @@ router.delete("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
 
   db.deletePost(req.params.id)
     .then((removed) => {
-      res.status(200).json({ message: `Post id ${req.params.id} has been deleted`});
+      res.status(200).json({
+        message: `Post id ${req.params.id} has been deleted`
+      });
     })
     .catch((error) => {
-      res.status(500).json({ error: "Failed to delete post" });
+      res.status(500).json({
+        message: "Failed to delete post"
+      });
     });
 
 });
@@ -79,43 +98,55 @@ router.put("/:id", checkIfPostExists, checkIfAuthorizedUser, (req, res) => {
       res.status(200).json(edit);
     })
     .catch((error) => {
-      res.status(500).json({ message: `Failed to update post ${error}` });
+      res.status(500).json({
+        message: `Failed to update post ${error}`
+      });
     });
 });
 
 //vote mechanism
 //"api/posts/:id/vote" , post and delete
 
-router.post("/:id/vote", checkIfPostExists, async (req,res) => {
+router.post("/:id/vote", checkIfPostExists, async (req, res) => {
 
   try {
     const voteExists = await db.hasVoted(req.params.id, req.user.id)
     if (voteExists) {
-      res.status(400).json({ message: `Cannot vote for post id ${req.params.id} twice!` })
+      res.status(400).json({
+        message: `Cannot vote for post id ${req.params.id} twice!`
+      })
     } else {
       const votes = await db.addVote(req.params.id, req.user.id)
       res.status(200).json(votes)
     }
-      
+
   } catch {
-    res.status(500).json({ message: `Failed to update vote due to ${error}` })
+    res.status(500).json({
+      message: `Failed to update vote due to ${error}`
+    })
   }
 })
 
-router.delete("/:id/vote", checkIfPostExists, async (req,res) => {
+router.delete("/:id/vote", checkIfPostExists, async (req, res) => {
 
   try {
     const voteExists = await db.hasVoted(req.params.id, req.user.id)
-    if (voteExists){
+    if (voteExists) {
       await db.removeVote(req.params.id, req.user.id)
-      res.status(200).json({ message: `Successfully remove your vote from ${req.params.id}`})
+      res.status(200).json({
+        message: `Successfully remove your vote from ${req.params.id}`
+      })
     } else {
-      res.status(400).json({ message: `You cannot perform this action twice` })
+      res.status(400).json({
+        message: `You cannot perform this action twice`
+      })
     }
-      
-    
+
+
   } catch {
-    res.status(500).json({ message: `Failed to update vote due to ${error}` })
+    res.status(500).json({
+      message: `Failed to update vote due to ${error}`
+    })
   }
 })
 

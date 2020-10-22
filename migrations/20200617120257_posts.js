@@ -29,10 +29,24 @@ exports.up = async function (knex) {
             .inTable("users")
         tbl.string("photo")
             .notNullable()
-    })  
+        tbl.boolean("is_archived")
+            .defaultTo(false)
+    })
+    await knex.schema.createTable("comments", tbl=> {
+        tbl.increments("id")
+            .notNullable()
+        tbl.string("comment")
+            .notNullable()
+        tbl.integer("user_id")
+            .notNullable()
+            .references("id")
+            .inTable("users")
+    })
 };
 
 exports.down = async function (knex) {
-    await knex.schema.dropTableIfExists("categories")
+    await knex.schema.dropTableIfExists("comments")
     await knex.schema.dropTableIfExists("posts")
+    await knex.schema.dropTableIfExists("categories")
+    
 };

@@ -20,17 +20,17 @@ function getPublicPosts() {
             "photo")
 
     return posts.then( resolvedPosts => {
-        let returnPosts = resolvedPosts.map(post => {
-            const postVotes = getVotes(post.id).then(votes => {
-                return votes
+        //getting a vote from each post
+        const proms = resolvedPosts.map(async (post) => {
+            const postVotes = await getVotes(post.id)
+                return {
+                    ...post,
+                    votes: postVotes
+                }
             })
-            return {
-                ...post,
-                votes: postVotes
-            }
-        })
-        return returnPosts
+        return Promise.all(proms)
     })
+        
 }
 
 function getVotes(postId){

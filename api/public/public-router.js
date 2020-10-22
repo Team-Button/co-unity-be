@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router()
-const db = require("./public-model")
+const db = require("../posts/posts-model")
 
 router.get("/", (req, res) => {
-    db.getPublicPosts()
+    db.getPosts()
         .then(response => {
             res.status(200).json(response)
         })

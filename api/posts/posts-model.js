@@ -17,7 +17,6 @@ function getPosts(id) {
   let posts = db("posts")
   .leftJoin("users", "posts.reported_by","users.id")
   .leftJoin("categories", "posts.category_id", "categories.id")
-  .leftJoin("votes", "posts.id", "votes.post_id")
   .select(
     "posts.id", 
     "topic", 
@@ -37,15 +36,16 @@ function getPosts(id) {
         }
       })
     } else {
-      return posts.then( posts => {
-        const promise = posts.map( async (post) => {
-          const postVotes = await getVotes(post.id)
-            return {
-              ...post,
-              votes: postVotes
-              }
-          })
-        return Promise.all(promise)
+      return posts.then( resolvedPosts => {
+        //getting a vote from each post
+        const proms = resolvedPosts.map(async (post) => {
+            const postVotes = await getVotes(post.id)
+                return {
+                    ...post,
+                    votes: postVotes
+                }
+            })
+        return Promise.all(proms)
       })
     }
 }

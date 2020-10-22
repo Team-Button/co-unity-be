@@ -11,6 +11,7 @@ router.use(express.json());
 router.get("/", (req, res) => {
   db.getPosts()
     .then((posts) => {
+      console.log(posts)
       res.status(200).json(posts);
     })
     .catch((error) => {

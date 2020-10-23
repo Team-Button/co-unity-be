@@ -1,14 +1,6 @@
 const moment = require("moment")
 
 exports.up = async function (knex) {
-
-    await knex.schema.createTable("categories", tbl=> {
-        tbl.increments("id")
-            .notNullable()
-        tbl.string("category")
-            .notNullable()
-    })
-
     await knex.schema.createTable("posts", tbl => {
         tbl.increments("id")
             .notNullable()
@@ -31,22 +23,14 @@ exports.up = async function (knex) {
             .notNullable()
         tbl.boolean("is_archived")
             .defaultTo(false)
+        tbl.string("zipcode")
+            .references("zipcode")
+            .inTable("zipcodes")
+            .notNullable()
     })
-    await knex.schema.createTable("comments", tbl=> {
-        tbl.increments("id")
-            .notNullable()
-        tbl.string("comment")
-            .notNullable()
-        tbl.integer("user_id")
-            .notNullable()
-            .references("id")
-            .inTable("users")
-    })
-};
-
+}
+  
 exports.down = async function (knex) {
-    await knex.schema.dropTableIfExists("comments")
-    await knex.schema.dropTableIfExists("posts")
-    await knex.schema.dropTableIfExists("categories")
-    
+    await knex.schema.dropTableIfExists("posts");
 };
+  

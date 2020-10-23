@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router()
-const db = require("./public-model")
+const db = require("../posts/posts-model")
 
 router.get("/", (req, res) => {
-    db.getPublicPosts()
+    db.getPosts()
         .then(response => {
             res.status(200).json(response)
         })
@@ -15,6 +15,25 @@ router.get("/", (req, res) => {
         })
 })
 
+
+router.get("/:id", (req, res) => {
+
+    db.getPosts(req.params.id)
+      .then((post) => {
+        if (post) {
+          res.status(200).json(post);
+        } else {
+          res.status(404).json({
+            message: "Could not find post with given id."
+          });
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({
+          error: "Failed to get posts"
+        });
+      });
+  });
 
 
 module.exports = router;

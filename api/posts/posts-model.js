@@ -17,35 +17,38 @@ function getPosts(id) {
   let posts = db("posts")
   .leftJoin("users", "posts.reported_by","users.id")
   .leftJoin("categories", "posts.category_id", "categories.id")
-  .leftJoin("votes", "posts.id", "votes.post_id")
   .select(
     "posts.id", 
     "topic", 
     "description", 
     "posted_date",
     "users.id as reporter_id",
-    "users.name as reporter", 
+    "users.name as reporter",
+    "posts.zipcode as zipcode",
     "categories.category as category", 
     "photo");
   
     if (id){
       return posts.where("posts.id", id).first().then(async (post) => {
         const postVotes = await getVotes(id)
+        const postComments = await getComments(id)
         return {
           ...post,
-          votes: postVotes
+          votes: postVotes,
+          comments: postComments
         }
       })
     } else {
-      return posts.then( posts => {
-        const promise = posts.map( async (post) => {
-          const postVotes = await getVotes(post.id)
-            return {
-              ...post,
-              votes: postVotes
-              }
-          })
-        return Promise.all(promise)
+      return posts.then( resolvedPosts => {
+        //getting a vote from each post
+        const proms = resolvedPosts.map(async (post) => {
+            const postVotes = await getVotes(post.id)
+                return {
+                    ...post,
+                    votes: postVotes
+                }
+            })
+        return Promise.all(proms)
       })
     }
 }
@@ -87,4 +90,17 @@ async function removeVote(postId, userId){
 
 function hasVoted(postId, userId){
   return db("votes").where({ post_id: postId, voter_id: userId }).first()
+}
+
+function getComments(postId){
+  return db("comments")
+  .join("users", "comments.user_id","users.id")
+  .where("post_id", postId)
+  .select(
+    "comments.user_id",
+    "comment",
+    "comments.id as comment_id",
+    "users.name as commentor",
+    "users.avatar as commentor_avatar"
+  )
 }

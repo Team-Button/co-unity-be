@@ -23,16 +23,19 @@ function getPosts(id) {
     "description", 
     "posted_date",
     "users.id as reporter_id",
-    "users.name as reporter", 
+    "users.name as reporter",
+    "posts.zipcode as zipcode",
     "categories.category as category", 
     "photo");
   
     if (id){
       return posts.where("posts.id", id).first().then(async (post) => {
         const postVotes = await getVotes(id)
+        const postComments = await getComments(id)
         return {
           ...post,
-          votes: postVotes
+          votes: postVotes,
+          comments: postComments
         }
       })
     } else {
@@ -87,4 +90,17 @@ async function removeVote(postId, userId){
 
 function hasVoted(postId, userId){
   return db("votes").where({ post_id: postId, voter_id: userId }).first()
+}
+
+function getComments(postId){
+  return db("comments")
+  .join("users", "comments.user_id","users.id")
+  .where("post_id", postId)
+  .select(
+    "comments.user_id",
+    "comment",
+    "comments.id as comment_id",
+    "users.name as commentor",
+    "users.avatar as commentor_avatar"
+  )
 }

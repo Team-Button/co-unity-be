@@ -1,10 +1,12 @@
 const db = require("../../database/dbconfig");
+const { getVotes } = require("./votes/votes-model")
 
 module.exports = {
   getPosts,
   addPost,
   updatePost,
   deletePost,
+  getPostsByUserId
 };
 
 

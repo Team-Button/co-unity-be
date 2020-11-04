@@ -1,14 +1,12 @@
 const db = require("../../database/dbconfig");
+const { getVotes } = require("./votes/votes-model")
 
 module.exports = {
   getPosts,
   addPost,
   updatePost,
   deletePost,
-  getVotes,
-  addVote,
-  removeVote,
-  hasVoted
+  getPostsByUserId
 };
 
 
@@ -72,35 +70,5 @@ function getPostsByUserId(userId){
 }
 
 
-//voting mechanisms
 
-function getVotes(postId){
-  return db("votes").where("post_id", postId).select("id","voter_id")
-}
 
-async function addVote(postId, userId){
-  await db("votes").insert({ post_id: postId, voter_id: userId })
-  return getVotes(postId)
-}
-
-async function removeVote(postId, userId){
-  await db("votes").where({ post_id: postId, voter_id: userId }).del()
-  return getVotes(postId)
-}
-
-function hasVoted(postId, userId){
-  return db("votes").where({ post_id: postId, voter_id: userId }).first()
-}
-
-function getComments(postId){
-  return db("comments")
-  .join("users", "comments.user_id","users.id")
-  .where("post_id", postId)
-  .select(
-    "comments.user_id",
-    "comment",
-    "comments.id as comment_id",
-    "users.name as commentor",
-    "users.avatar as commentor_avatar"
-  )
-}

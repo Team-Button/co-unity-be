@@ -5,6 +5,7 @@ module.exports = {
   add,
   findBy,
   findById,
+  returnUserInfo
 };
 
 function findUsers() {
@@ -29,4 +30,11 @@ function add(user) {
 
 function findById(id) {
   return db("users").select("id", "username").where({ id }).first();
+}
+
+function returnUserInfo(id) {
+  return db("users")
+    .select("id", "username", "name")
+    .where("id", id)
+    .first()
 }
